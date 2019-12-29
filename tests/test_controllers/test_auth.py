@@ -1,3 +1,6 @@
+from freezegun import freeze_time
+import jwt
+
 from src.controllers.auth import AuthenticationController
 from src.models.user import User
 
@@ -38,3 +41,52 @@ def test_verify_user_should_reject_when_password_is_wrong(mocker):
     assert (
         AuthenticationController.verify_user("fake_username", "fake_password") == False
     )
+
+
+@freeze_time("2019-12-29 13:53:01")
+def test_issue_token_should_issue_a_token(mocker):
+    mocker.patch("src.controllers.auth.get_jwt_secret", return_value="secret")
+
+    token_issued = AuthenticationController.issue_token("fake_user", 60 * 60)
+
+    assert (
+        token_issued
+        == b"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImZha2VfdXNlciIsImV4cGlyZWRfYXQiOiIyMDE5LTEyLTI5IDE0OjUzOjAxIn0.UPwhzxzu9mNoxJKXlzS7mOysfu69lB-QkEmlkgsEirQ"
+    )
+
+
+@freeze_time("2019-12-29 14:11:00")
+def test_verify_token_should_pass_a_valid_token(mocker):
+    mocker.patch("src.controllers.auth.get_jwt_secret", return_value="secret")
+
+    assert (
+        AuthenticationController.verify_token(
+            b"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImZha2VfdXNlciIsImV4cGlyZWRfYXQiOiIyMDE5LTEyLTI5IDE1OjExOjAwIn0.W92iFKuQPab5Kos-5PAfXd7YUNt5xhnRyh0nNoUs8eM"
+        )
+        == True
+    )
+
+
+@freeze_time("2019-12-29 15:11:01")
+def test_verify_token_should_reject_an_expired_token(mocker):
+    mocker.patch("src.controllers.auth.get_jwt_secret", return_value="secret")
+
+    assert (
+        AuthenticationController.verify_token(
+            b"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImZha2VfdXNlciIsImV4cGlyZWRfYXQiOiIyMDE5LTEyLTI5IDE1OjExOjAwIn0.W92iFKuQPab5Kos-5PAfXd7YUNt5xhnRyh0nNoUs8eM"
+        )
+        == False
+    )
+
+
+def test_verify_token_should_reject_an_invalid_token(mocker):
+    mocker.patch("src.controllers.auth.get_jwt_secret", return_value="secret")
+
+    assert (
+        AuthenticationController.verify_token(
+            # generate with 'wrong_secret'
+            b"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImZha2VfdXNlciIsImV4cGlyZWRfYXQiOiIyMDE5LTEyLTI5IDE1OjExOjAwIn0.v7qu0agGnkG-1E7bIcwnuW3OzBeRwrYrB3jKd_pGrb8"
+        )
+        == False
+    )
+
