@@ -1,6 +1,6 @@
 from flask import Blueprint, session, request, make_response
 
-from src.controllers.auth import AuthenticationController, AuthorizationController
+from src.controllers.auth import AuthenticationController
 
 bp = Blueprint("users", __name__, url_prefix="/users")
 
@@ -16,7 +16,7 @@ def login():
     ):
         return make_response("", 403)
 
-    session["access_token"] = AuthorizationController.issue_token(
+    session["access_token"] = AuthenticationController.issue_token(
         user_credential["username"]
     )
     return make_response("", 200)

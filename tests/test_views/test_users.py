@@ -8,7 +8,7 @@ def test_it_should_login_user(app, mocker):
         "src.views.users.AuthenticationController.verify_user", return_value=True
     )
     mocker.patch(
-        "src.views.users.AuthorizationController.issue_token", return_value="token"
+        "src.views.users.AuthenticationController.issue_token", return_value="token"
     )
 
     with app.test_client() as client:
