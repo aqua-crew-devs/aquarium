@@ -14,3 +14,11 @@ class UserManager:
     @staticmethod
     def get_by_username(username: str) -> Optional[User]:
         pass
+
+    @staticmethod
+    def save(user: User):
+        pass
+
+    @staticmethod
+    def does_user_exist(username: str) -> bool:
+        pass

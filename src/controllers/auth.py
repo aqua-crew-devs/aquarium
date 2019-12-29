@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 
 import jwt
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
-from src.models.user import UserManager
+from src.models.user import UserManager, User
 
 
 def get_jwt_secret() -> str:
@@ -41,3 +41,9 @@ class AuthenticationController:
         except:
             return False
 
+    @staticmethod
+    def add_user(username: str, password: str):
+        if UserManager.does_user_exist(username):
+            raise RuntimeError("user %s has existed", username)
+        new_user = User(username, generate_password_hash(password))
+        UserManager.save(new_user)

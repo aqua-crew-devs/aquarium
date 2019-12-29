@@ -1,5 +1,6 @@
 from freezegun import freeze_time
 import jwt
+import pytest
 
 from src.controllers.auth import AuthenticationController
 from src.models.user import User
@@ -90,3 +91,19 @@ def test_verify_token_should_reject_an_invalid_token(mocker):
         == False
     )
 
+
+def test_add_user_should_add_a_user(mocker):
+    mocker.patch("src.controllers.auth.UserManager.does_user_exist", return_value=False)
+    save_mock = mocker.patch("src.controllers.auth.UserManager.save")
+
+    AuthenticationController.add_user("fake_user", "fake_password")
+
+    assert save_mock.call_args[0][0].username == "fake_user"
+    assert save_mock.call_args[0][0].password != "fake_password"
+
+
+def test_add_user_should_throw_validation_error_if_user_exist(mocker):
+    mocker.patch("src.controllers.auth.UserManager.does_user_exist", return_value=True)
+
+    with pytest.raises(RuntimeError):
+        AuthenticationController.add_user("fake_user", "fake_password")
