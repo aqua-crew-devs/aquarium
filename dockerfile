@@ -11,4 +11,4 @@ RUN apt-get install dos2unix
 
 EXPOSE 5000
 
-ENTRYPOINT [ "entrypoints/entrypoint.sh" ]
+ENTRYPOINT [ "entrypoint.sh" ]
