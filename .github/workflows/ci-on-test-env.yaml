@@ -19,6 +19,7 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         snapshot: true
+      id: docker-publisher 
     - name: Retrieve DigitalOcean kubeconfig
       uses: digitalocean/action-doctl@master
       env:
