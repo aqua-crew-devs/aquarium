@@ -21,3 +21,8 @@ def login():
     )
     return make_response("", 200)
 
+
+@bp.route("/logout", methods=["POST"])
+def logout():
+    session["access_token"] = ""
+    return make_response("", 200)

@@ -29,3 +29,12 @@ def test_it_should_not_login_user_if_user_verification_does_not_passed(client, m
         "/users/login", json={"username": "fake_username", "password": "fake_password"},
     )
     assert resp.status_code == 403
+
+
+def test_it_should_invalidate_token_when_user_logout(app):
+    with app.test_client() as client:
+        with client.session_transaction() as session:
+            session["access_token"] = "a token"
+        resp = client.post("/users/logout")
+        assert resp.status_code == 200
+        assert flask.session["access_token"] == ""
