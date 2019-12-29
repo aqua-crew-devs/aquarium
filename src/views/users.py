@@ -1,8 +1,18 @@
 from flask import Blueprint, session, request, make_response
+from flask.cli import with_appcontext
+import click
 
 from src.controllers.auth import AuthenticationController
 
 bp = Blueprint("users", __name__, url_prefix="/users")
+
+
+@click.command("add-user")
+@click.argument("username")
+@click.argument("password")
+@with_appcontext
+def add_user(username, password):
+    AuthenticationController.add_user(username, password)
 
 
 @bp.route("/login", methods=["POST"])
@@ -26,3 +36,7 @@ def login():
 def logout():
     session["access_token"] = ""
     return make_response("", 200)
+
+
+def init_add_user(app):
+    app.cli.add_command(add_user)

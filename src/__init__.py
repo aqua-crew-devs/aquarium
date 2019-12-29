@@ -8,6 +8,12 @@ def init_route(app):
     app.register_blueprint(users.bp)
 
 
+def init_cli_command(app):
+    from .views import users
+
+    users.init_add_user(app)
+
+
 def create_app(test_config=None):
     app = Flask(__name__)
     mode = getenv("MODE", "develop")
@@ -23,4 +29,5 @@ def create_app(test_config=None):
         app.config.from_mapping(test_config)
 
     init_route(app)
+    init_cli_command(app)
     return app
