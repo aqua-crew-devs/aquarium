@@ -22,7 +22,12 @@ def get_mongo_client() -> pymongo.MongoClient:
 class UserManager:
     @staticmethod
     def get_by_username(username: str) -> Optional[User]:
-        pass
+        users = get_mongo_client().aquarium.users
+
+        user = users.find_one({"username": username})
+        if user is None:
+            return None
+        return User(username=user["username"], password=user["password"])
 
     @staticmethod
     def save(user: User):
@@ -36,4 +41,5 @@ class UserManager:
 
     @staticmethod
     def does_user_exist(username: str) -> bool:
-        pass
+        return UserManager.get_by_username(username) is not None
+
