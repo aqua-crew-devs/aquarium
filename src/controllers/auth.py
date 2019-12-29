@@ -2,12 +2,13 @@ from datetime import datetime, timedelta
 
 import jwt
 from werkzeug.security import check_password_hash, generate_password_hash
+from flask import current_app
 
 from src.models.user import UserManager, User
 
 
 def get_jwt_secret() -> str:
-    pass
+    return current_app.config["JWT_KEY"]
 
 
 class AuthenticationController:
