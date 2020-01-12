@@ -38,5 +38,17 @@ def logout():
     return make_response("", 200)
 
 
+@bp.route("/validate", methods=["POST"])
+def validate_token():
+    if "access_token" not in session:
+        return make_response("", 403)
+
+    res = AuthenticationController.verify_token(session["access_token"])
+    if res:
+        return make_response("", 200)
+    else:
+        return make_response("", 403)
+
+
 def init_add_user(app):
     app.cli.add_command(add_user)
