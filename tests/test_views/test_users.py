@@ -7,9 +7,6 @@ def test_it_should_login_user(app, mocker):
     mocker.patch(
         "src.views.users.AuthenticationController.verify_user", return_value=True
     )
-    mocker.patch(
-        "src.views.users.AuthenticationController.issue_token", return_value="token"
-    )
 
     with app.test_client() as client:
         resp = client.post(
@@ -17,7 +14,7 @@ def test_it_should_login_user(app, mocker):
             json={"username": "fake_username", "password": "fake_password"},
         )
         assert resp.status_code == 200
-        assert flask.session["access_token"] == "token"
+        assert flask.session["access_token"] is not None
 
 
 def test_it_should_not_login_user_if_user_verification_does_not_passed(client, mocker):

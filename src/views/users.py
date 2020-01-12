@@ -27,7 +27,7 @@ def login():
         return make_response("", 403)
 
     session["access_token"] = AuthenticationController.issue_token(
-        user_credential["username"]
+        user_credential["username"], 60 * 60 * 24  # 1 day
     )
     return make_response("", 200)
 
