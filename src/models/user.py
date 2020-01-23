@@ -1,5 +1,4 @@
-import pymongo
-from flask import current_app
+from .database import get_mongo_client
 
 from typing import Optional
 
@@ -11,12 +10,6 @@ class User:
 
     def __eq__(self, other):
         return vars(self) == vars(other)
-
-
-def get_mongo_client() -> pymongo.MongoClient:
-    mongo_url = current_app.config["MONGO_URL"]
-    mongo_port = current_app.config["MONGO_PORT"]
-    return pymongo.MongoClient(mongo_url, mongo_port)
 
 
 class UserManager:
