@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from src.models.channel import Channel
+from src.controllers.exceptions import ChannelExistedException
 
 
 def create_sample_channel():
@@ -31,3 +32,86 @@ def test_it_should_list_all_channels(client, mocker):
     assert len(data) == 2
     assert data[0]["id"] == "channel_1"
     assert data[1]["id"] == "channel_2"
+
+
+def test_it_should_create_a_channel_in_manual_mode(client, mocker):
+    create_channel_mocker = mocker.patch(
+        "src.views.resources.channels.ChannelController.create_channel"
+    )
+
+    aqua_channel = {
+        "id": "UC1opHUrw8rvnsadT-iGp7Cg",
+        "name": "Aqua Ch. 湊あくあ",
+        "description": "sample desp",
+        "published_at": "2018-07-31",
+        "thumbnail": "https://yt3.ggpht.com/a/AGF-l79lFypl4LxY5kf60UpCL6gakgSGHtN-t8hq1g=s288-c-k-c0xffffffff-no-rj-mo",
+        "country": "JP",
+    }
+    resp = client.post("/channels", json={"mode": "manual", "channel": aqua_channel,},)
+    assert resp.status_code == 201
+    create_channel_mocker.assert_called_with(
+        Channel(
+            **{
+                "id": "UC1opHUrw8rvnsadT-iGp7Cg",
+                "name": "Aqua Ch. 湊あくあ",
+                "description": "sample desp",
+                "published_at": datetime(2018, 7, 31, 0, 0, 0),
+                "thumbnail": "https://yt3.ggpht.com/a/AGF-l79lFypl4LxY5kf60UpCL6gakgSGHtN-t8hq1g=s288-c-k-c0xffffffff-no-rj-mo",
+                "country": "JP",
+            }
+        )
+    )
+
+
+def test_it_should_create_a_channel_in_auto_mode(client, mocker):
+    create_channel_mocker = mocker.patch(
+        "src.views.resources.channels.ChannelController.create_channel"
+    )
+    mocker.patch(
+        "src.views.resources.channels.fetch_channel_info_from_youtube",
+        return_value=Channel(
+            **{
+                "id": "UC1opHUrw8rvnsadT-iGp7Cg",
+                "name": "Aqua Ch. 湊あくあ",
+                "description": "sample desp",
+                "published_at": datetime(2018, 7, 31, 0, 0, 0),
+                "thumbnail": "https://yt3.ggpht.com/a/AGF-l79lFypl4LxY5kf60UpCL6gakgSGHtN-t8hq1g=s288-c-k-c0xffffffff-no-rj-mo",
+                "country": "JP",
+            }
+        ),
+    )
+
+    resp = client.post(
+        "/channels",
+        json={"mode": "auto", "channel": {"id": "UC1opHUrw8rvnsadT-iGp7Cg"}},
+    )
+
+    assert resp.status_code == 201
+    create_channel_mocker.assert_called_with(
+        Channel(
+            **{
+                "id": "UC1opHUrw8rvnsadT-iGp7Cg",
+                "name": "Aqua Ch. 湊あくあ",
+                "description": "sample desp",
+                "published_at": datetime(2018, 7, 31, 0, 0, 0),
+                "thumbnail": "https://yt3.ggpht.com/a/AGF-l79lFypl4LxY5kf60UpCL6gakgSGHtN-t8hq1g=s288-c-k-c0xffffffff-no-rj-mo",
+                "country": "JP",
+            }
+        )
+    )
+
+
+def test_it_should_return_code_2_400_to_signal_channel_is_duplicated(client, mocker):
+    mocker.patch(
+        "src.views.resources.channels.ChannelController.create_channel",
+        side_effect=ChannelExistedException("UC1opHUrw8rvnsadT-iGp7Cg"),
+    )
+
+    resp = client.post(
+        "/channels",
+        json={"mode": "auto", "channel": {"id": "UC1opHUrw8rvnsadT-iGp7Cg"}},
+    )
+
+    assert resp.status_code == 400
+    payload = resp.get_json()
+    assert payload["code"] == 2
