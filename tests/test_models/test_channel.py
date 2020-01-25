@@ -2,6 +2,7 @@ from datetime import datetime
 
 import pymongo
 import mongomock
+import pytest
 
 from src.models.channel import ChannelManager, Channel
 
@@ -78,3 +79,25 @@ def test_it_should_list_of_all_channels(app):
         assert res[0].id == "abcd"
         assert res[1].id == "cdef"
 
+
+@mongomock.patch(servers=TEST_MONGO_SERVERS)
+def test_it_should_get_channel_by_id(app):
+    with app.app_context():
+        channels = pymongo.MongoClient(*TEST_MONGO_SERVER).aquarium.channels
+        channels.insert_one(create_sample_channel())
+
+        channel = ChannelManager.get_channel_by_id("abcd")
+        assert channel is not None
+        assert channel.id == "abcd"
+        assert channel.name == "helloworld"
+        assert channel.description == "an awesome channel"
+        assert channel.thumbnail == "https://url_to_thumbnails"
+        assert channel.published_at == datetime(2020, 1, 24, 6, 14, 00)
+        assert channel.country == "JP"
+
+
+@mongomock.patch(servers=TEST_MONGO_SERVERS)
+def test_it_should_raise_error_if_no_such_channel_exist(app):
+    with app.app_context():
+        with pytest.raises(RuntimeError):
+            ChannelManager.get_channel_by_id("abcd")

@@ -31,8 +31,18 @@ class ChannelManager:
 
         channels.find_one_and_replace({"id": channel.id}, vars(channel), upsert=True)
 
+    @staticmethod
     def get_channels():
         channels = get_mongo_client().aquarium.channels.find()
 
         res = list(map(lambda channel: Channel(**channel), channels))
         return res
+
+    @staticmethod
+    def get_channel_by_id(channel_id: str):
+        channel = get_mongo_client().aquarium.channels.find_one({"id": channel_id})
+
+        if channel is None:
+            raise RuntimeError("No such channel %s", channel_id)
+
+        return Channel(**channel)
