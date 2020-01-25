@@ -11,6 +11,7 @@ class Channel:
         thumbnail: str,
         published_at: datetime,
         country: str,
+        **kwargs
     ):
         self.id = id
         self.name = name
@@ -30,3 +31,8 @@ class ChannelManager:
 
         channels.find_one_and_replace({"id": channel.id}, vars(channel), upsert=True)
 
+    def get_channels():
+        channels = get_mongo_client().aquarium.channels.find()
+
+        res = list(map(lambda channel: Channel(**channel), channels))
+        return res
