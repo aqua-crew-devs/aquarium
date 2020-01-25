@@ -97,7 +97,24 @@ def test_it_should_get_channel_by_id(app):
 
 
 @mongomock.patch(servers=TEST_MONGO_SERVERS)
-def test_it_should_raise_error_if_no_such_channel_exist(app):
+def test_it_should_raise_error_if_no_such_channel_exist_when_get_a_channel(app):
     with app.app_context():
         with pytest.raises(RuntimeError):
             ChannelManager.get_channel_by_id("abcd")
+
+
+@mongomock.patch(servers=TEST_MONGO_SERVERS)
+def test_it_should_delete_a_channel_by_id(app):
+    with app.app_context():
+        channels = pymongo.MongoClient(*TEST_MONGO_SERVER).aquarium.channels
+        channels.insert_one(create_sample_channel())
+
+        channel = ChannelManager.delete_channel_by_id("abcd")
+        assert channels.count_documents({}) == 0
+
+
+@mongomock.patch(servers=TEST_MONGO_SERVERS)
+def test_it_should_raise_error_if_no_such_channel_exist_when_deleting_a_channel(app):
+    with app.app_context():
+        with pytest.raises(RuntimeError):
+            ChannelManager.delete_channel_by_id("abcd")
