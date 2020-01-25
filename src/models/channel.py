@@ -23,6 +23,11 @@ class Channel:
     def __eq__(self, other):
         return vars(self) == vars(other)
 
+    def serialize(self):
+        res = vars(self)
+        res["published_at"] = res["published_at"].strftime("%Y-%m-%d")
+        return res
+
 
 class ChannelManager:
     @staticmethod
