@@ -82,3 +82,30 @@ def test_it_should_raise_not_existed_exception_if_try_to_get_not_existing_channe
 
     with pytest.raises(ChannelNotExistException):
         ChannelController.get_channel("abcd")
+
+
+def test_it_should_delete_channel(mocker):
+    channel = Channel(**create_sample_channel())
+    mocker.patch(
+        "src.controllers.channel.ChannelManager.get_channel_by_id",
+        return_value=channel,
+    )
+    delete = mocker.patch(
+        "src.controllers.channel.ChannelManager.delete_channel_by_id",
+    )
+
+    ChannelController.delete_channel("abcd")
+    delete.assert_called_with("abcd")
+
+def test_it_should_raise_not_existed_channel_if_attempt_to_delete_such_one(mocker):
+    channel = Channel(**create_sample_channel())
+    mocker.patch(
+        "src.controllers.channel.ChannelManager.get_channel_by_id",
+        return_value=None,
+    )
+    delete = mocker.patch(
+        "src.controllers.channel.ChannelManager.delete_channel_by_id",
+    )
+
+    with pytest.raises(ChannelNotExistException):
+        ChannelController.delete_channel("abcd")

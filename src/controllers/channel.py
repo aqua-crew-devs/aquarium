@@ -22,4 +22,6 @@ class ChannelController:
 
     @staticmethod
     def delete_channel(id: str):
-        pass
+        if ChannelManager.get_channel_by_id(id) is None:
+            raise ChannelNotExistException(id)
+        ChannelManager.delete_channel_by_id(id)
