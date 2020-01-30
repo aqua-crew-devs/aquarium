@@ -45,6 +45,7 @@ def test_it_should_add_a_user_when_invoke_add_user_command(cli_runner, mocker, a
     )
 
     with app.app_context():
+        print(cli_runner)
         cli_runner.invoke(args=["add-user", "username", "password"])
 
         add_user_mocker.assert_called_with("username", "password")

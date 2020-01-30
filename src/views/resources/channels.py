@@ -1,8 +1,9 @@
 from flask_restful import Resource
-from flask import request
+from flask import request, session, make_response
 from dateutil.parser import parse
 
 from src.controllers.channel import ChannelController
+from src.controllers.auth import AuthenticationController
 from src.controllers.exceptions import ChannelExistedException
 from src.models.channel import Channel
 
@@ -17,6 +18,11 @@ class ChannelsResource(Resource):
         return list(map(lambda c: c.serialize(), channels))
 
     def post(self):
+        if "access_token" not in session:
+            return make_response("", 403)
+
+        if not AuthenticationController.verify_token(session["access_token"]):
+            return make_response("", 403)
         payload = request.get_json()
         mode = payload["mode"]
 

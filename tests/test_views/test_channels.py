@@ -34,7 +34,7 @@ def test_it_should_list_all_channels(client, mocker):
     assert data[1]["id"] == "channel_2"
 
 
-def test_it_should_create_a_channel_in_manual_mode(client, mocker):
+def test_it_should_create_a_channel_in_manual_mode(client, mocker, auth):
     create_channel_mocker = mocker.patch(
         "src.views.resources.channels.ChannelController.create_channel"
     )
@@ -47,6 +47,9 @@ def test_it_should_create_a_channel_in_manual_mode(client, mocker):
         "thumbnail": "https://yt3.ggpht.com/a/AGF-l79lFypl4LxY5kf60UpCL6gakgSGHtN-t8hq1g=s288-c-k-c0xffffffff-no-rj-mo",
         "country": "JP",
     }
+
+    auth.login()
+
     resp = client.post("/channels", json={"mode": "manual", "channel": aqua_channel,},)
     assert resp.status_code == 201
     create_channel_mocker.assert_called_with(
@@ -63,7 +66,7 @@ def test_it_should_create_a_channel_in_manual_mode(client, mocker):
     )
 
 
-def test_it_should_create_a_channel_in_auto_mode(client, mocker):
+def test_it_should_create_a_channel_in_auto_mode(client, mocker, auth):
     create_channel_mocker = mocker.patch(
         "src.views.resources.channels.ChannelController.create_channel"
     )
@@ -81,6 +84,7 @@ def test_it_should_create_a_channel_in_auto_mode(client, mocker):
         ),
     )
 
+    auth.login()
     resp = client.post(
         "/channels",
         json={"mode": "auto", "channel": {"id": "UC1opHUrw8rvnsadT-iGp7Cg"}},
@@ -101,12 +105,15 @@ def test_it_should_create_a_channel_in_auto_mode(client, mocker):
     )
 
 
-def test_it_should_return_code_2_400_to_signal_channel_is_duplicated(client, mocker):
+def test_it_should_return_code_2_400_to_signal_channel_is_duplicated(
+    client, mocker, auth
+):
     mocker.patch(
         "src.views.resources.channels.ChannelController.create_channel",
         side_effect=ChannelExistedException("UC1opHUrw8rvnsadT-iGp7Cg"),
     )
 
+    auth.login()
     resp = client.post(
         "/channels",
         json={"mode": "auto", "channel": {"id": "UC1opHUrw8rvnsadT-iGp7Cg"}},
@@ -115,3 +122,11 @@ def test_it_should_return_code_2_400_to_signal_channel_is_duplicated(client, moc
     assert resp.status_code == 400
     payload = resp.get_json()
     assert payload["code"] == 2
+
+
+def test_it_should_return_400_if_request_is_not_authenticated(client):
+    resp = client.post(
+        "/channels",
+        json={"mode": "auto", "channel": {"id": "UC1opHUrw8rvnsadT-iGp7Cg"}},
+    )
+    assert resp.status_code == 403
