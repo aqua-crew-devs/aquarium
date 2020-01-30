@@ -1,7 +1,10 @@
 from datetime import datetime
 
+import pytest
+
 from src.models.channel import Channel
 from src.controllers.channel import ChannelController
+from src.controllers.exceptions import ChannelExistedException
 
 
 def create_sample_channel():
@@ -28,3 +31,32 @@ def test_it_should_return_all_channels(mocker):
     res = ChannelController.get_all_channels()
     assert res[0] == Channel(**channel_1)
     assert res[1] == Channel(**channel_2)
+
+
+def test_it_should_create_channel(mocker):
+    channel = Channel(**create_sample_channel())
+    mocker.patch(
+        "src.controllers.channel.ChannelManager.get_channel_by_id", return_value=None,
+    )
+    save = mocker.patch(
+        "src.controllers.channel.ChannelManager.save", return_value=None,
+    )
+    ChannelController.create_channel(channel)
+
+    save.assert_called_with(channel)
+
+
+def test_it_should_raise_channel_existed_exception_when_attempt_to_create_existed_channel(
+    mocker,
+):
+    channel = Channel(**create_sample_channel())
+    mocker.patch(
+        "src.controllers.channel.ChannelManager.get_channel_by_id",
+        return_value=Channel,
+    )
+    save = mocker.patch(
+        "src.controllers.channel.ChannelManager.save", return_value=None,
+    )
+
+    with pytest.raises(ChannelExistedException):
+        ChannelController.create_channel(channel)
