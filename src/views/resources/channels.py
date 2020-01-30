@@ -51,5 +51,8 @@ class ChannelsIndexResource(Resource):
 
     @login_required
     def delete(self, id: str):
-        ChannelController.delete_channel(id)
-        return "", 200
+        try:
+            ChannelController.delete_channel(id)
+            return "", 200
+        except ChannelNotExistException:
+            return "", 404

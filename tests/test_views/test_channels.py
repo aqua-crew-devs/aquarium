@@ -174,3 +174,16 @@ def test_it_should_throw_403_if_attempt_to_delete_a_channel_without_authorizatio
 ):
     resp = client.delete("/channels/abcd")
     assert resp.status_code == 403
+
+
+def test_it_should_throw_404_if_attempt_to_delete_a_channel_not_existed(
+    client, mocker, auth
+):
+    auth.login()
+    mocker.patch(
+        "src.views.resources.channels.ChannelController.delete_channel",
+        side_effect=ChannelNotExistException("abcd"),
+    )
+
+    resp = client.delete("/channels/abcd")
+    assert resp.status_code == 404
