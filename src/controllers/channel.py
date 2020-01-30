@@ -13,3 +13,7 @@ class ChannelController:
     @staticmethod
     def get_channel(id: str) -> Channel:
         pass
+
+    @staticmethod
+    def delete_channel(id: str):
+        pass

@@ -156,3 +156,14 @@ def test_it_should_return_404_if_channel_not_exist(client, mocker):
 
     resp = client.get("/channels/not_exist")
     assert resp.status_code == 404
+
+
+def test_it_should_delete_a_channel(client, mocker, auth):
+    auth.login()
+    delete_channel = mocker.patch(
+        "src.views.resources.channels.ChannelController.delete_channel"
+    )
+
+    resp = client.delete("/channels/abcd")
+    delete_channel.assert_called_with("abcd")
+    assert resp.status_code == 200

@@ -51,3 +51,7 @@ class ChannelsIndexResource(Resource):
             return ChannelController.get_channel(id).serialize()
         except ChannelNotExistException:
             return "", 404
+
+    def delete(self, id: str):
+        ChannelController.delete_channel(id)
+        return "", 200
