@@ -1,6 +1,6 @@
 from dateutil.parser import parse
 
-from . import IAPIObject
+from .interface import IAPIObject
 
 
 class ChannelThumbnail:

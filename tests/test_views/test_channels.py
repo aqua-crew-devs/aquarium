@@ -112,6 +112,19 @@ def test_it_should_return_code_2_400_to_signal_channel_is_duplicated(
         "src.views.resources.channels.ChannelController.create_channel",
         side_effect=ChannelExistedException("UC1opHUrw8rvnsadT-iGp7Cg"),
     )
+    mocker.patch(
+        "src.views.resources.channels.fetch_channel_info_from_youtube",
+        return_value=Channel(
+            **{
+                "id": "UC1opHUrw8rvnsadT-iGp7Cg",
+                "name": "Aqua Ch. 湊あくあ",
+                "description": "sample desp",
+                "published_at": datetime(2018, 7, 31, 0, 0, 0),
+                "thumbnail": "https://yt3.ggpht.com/a/AGF-l79lFypl4LxY5kf60UpCL6gakgSGHtN-t8hq1g=s288-c-k-c0xffffffff-no-rj-mo",
+                "country": "JP",
+            }
+        ),
+    )
 
     auth.login()
     resp = client.post(

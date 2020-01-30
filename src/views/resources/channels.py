@@ -7,10 +7,21 @@ from src.controllers.auth import AuthenticationController
 from src.controllers.exceptions import ChannelExistedException, ChannelNotExistException
 from src.models.channel import Channel
 from .auth_util import login_required
+from src.utils import YouTubeDataAPIInstance
+from src.utils.youtube import Channels
 
 
 def fetch_channel_info_from_youtube(channel_id: str) -> Channel:
-    pass
+    yt_data_api = YouTubeDataAPIInstance.get_instance()
+    channel = yt_data_api.request(Channels("snippet", channel_id))
+    return Channel(
+        id=channel.id,
+        name=channel.title,
+        description=channel.description,
+        published_at=channel.published_at,
+        thumbnail=channel.thumbnail.high,
+        country=channel.country,
+    )
 
 
 class ChannelsResource(Resource):

@@ -1,22 +1,24 @@
-from typing import Tuple
 import abc
 import logging
 
 import requests
 
+from .channels import Channels
+from .interface import IAPIObject
 
-class IAPIObject(abc.ABC):
-    def get_url(self) -> str:
-        pass
 
-    def get_http_method(self) -> str:
-        pass
+# class IAPIObject(abc.ABC):
+#     def get_url(self) -> str:
+#         pass
 
-    def get_parameters(self) -> Tuple[str, dict]:
-        pass
+#     def get_http_method(self) -> str:
+#         pass
 
-    def parse_item(self, item):
-        pass
+#     def get_parameters(self) -> Tuple[str, dict]:
+#         pass
+
+#     def parse_item(self, item):
+#         pass
 
 
 class YouTubeDataAPIResponse:
