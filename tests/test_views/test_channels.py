@@ -130,3 +130,19 @@ def test_it_should_return_400_if_request_is_not_authenticated(client):
         json={"mode": "auto", "channel": {"id": "UC1opHUrw8rvnsadT-iGp7Cg"}},
     )
     assert resp.status_code == 403
+
+
+def test_it_should_return_channel(client, mocker):
+    mocker.patch(
+        "src.views.resources.channels.ChannelController.get_channel",
+        return_value=Channel(**create_sample_channel()),
+    )
+    resp = client.get("/channels/abcd")
+    assert resp.status_code == 200
+    payload = resp.get_json()
+    assert payload["id"] == "abcd"
+    assert payload["name"] == "helloworld"
+    assert payload["description"] == "an awesome channel"
+    assert payload["published_at"] == "2020-01-24"
+    assert payload["thumbnail"] == "https://url_to_thumbnails"
+    assert payload["country"] == "JP"

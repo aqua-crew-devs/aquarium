@@ -9,3 +9,7 @@ class ChannelController:
     @staticmethod
     def create_channel(channel: Channel):
         pass
+
+    @staticmethod
+    def get_channel(id: str) -> Channel:
+        pass

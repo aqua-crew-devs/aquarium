@@ -43,3 +43,8 @@ class ChannelsResource(Resource):
             return {"code": 2}, 400
 
         return "", 201
+
+
+class ChannelsIndexResource(Resource):
+    def get(self, id: str):
+        return ChannelController.get_channel(id).serialize()
