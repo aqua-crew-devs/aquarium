@@ -4,7 +4,7 @@ import pytest
 
 from src.models.channel import Channel
 from src.controllers.channel import ChannelController
-from src.controllers.exceptions import ChannelExistedException
+from src.controllers.exceptions import ChannelExistedException, ChannelNotExistException
 
 
 def create_sample_channel():
@@ -60,3 +60,25 @@ def test_it_should_raise_channel_existed_exception_when_attempt_to_create_existe
 
     with pytest.raises(ChannelExistedException):
         ChannelController.create_channel(channel)
+
+
+def test_it_should_return_channel_by_id(mocker):
+    channel = Channel(**create_sample_channel())
+    mocker.patch(
+        "src.controllers.channel.ChannelManager.get_channel_by_id",
+        return_value=channel,
+    )
+
+    res = ChannelController.get_channel("abcd")
+    assert res == channel
+
+
+def test_it_should_raise_not_existed_exception_if_try_to_get_not_existing_channel(
+    mocker,
+):
+    mocker.patch(
+        "src.controllers.channel.ChannelManager.get_channel_by_id", return_value=None,
+    )
+
+    with pytest.raises(ChannelNotExistException):
+        ChannelController.get_channel("abcd")

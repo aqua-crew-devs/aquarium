@@ -1,5 +1,5 @@
 from src.models.channel import Channel, ChannelManager
-from .exceptions import ChannelExistedException
+from .exceptions import ChannelExistedException, ChannelNotExistException
 
 
 class ChannelController:
@@ -15,7 +15,10 @@ class ChannelController:
 
     @staticmethod
     def get_channel(id: str) -> Channel:
-        pass
+        res = ChannelManager.get_channel_by_id(id)
+        if res is None:
+            raise ChannelNotExistException(id)
+        return res
 
     @staticmethod
     def delete_channel(id: str):
