@@ -6,6 +6,7 @@ from src.controllers.channel import ChannelController
 from src.controllers.auth import AuthenticationController
 from src.controllers.exceptions import ChannelExistedException, ChannelNotExistException
 from src.models.channel import Channel
+from .auth_util import login_required
 
 
 def fetch_channel_info_from_youtube(channel_id: str) -> Channel:
@@ -17,12 +18,8 @@ class ChannelsResource(Resource):
         channels = ChannelController.get_all_channels()
         return list(map(lambda c: c.serialize(), channels))
 
+    @login_required
     def post(self):
-        if "access_token" not in session:
-            return make_response("", 403)
-
-        if not AuthenticationController.verify_token(session["access_token"]):
-            return make_response("", 403)
         payload = request.get_json()
         mode = payload["mode"]
 
@@ -52,6 +49,7 @@ class ChannelsIndexResource(Resource):
         except ChannelNotExistException:
             return "", 404
 
+    @login_required
     def delete(self, id: str):
         ChannelController.delete_channel(id)
         return "", 200

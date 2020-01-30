@@ -167,3 +167,10 @@ def test_it_should_delete_a_channel(client, mocker, auth):
     resp = client.delete("/channels/abcd")
     delete_channel.assert_called_with("abcd")
     assert resp.status_code == 200
+
+
+def test_it_should_throw_403_if_attempt_to_delete_a_channel_without_authorization(
+    client,
+):
+    resp = client.delete("/channels/abcd")
+    assert resp.status_code == 403
