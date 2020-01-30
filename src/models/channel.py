@@ -46,10 +46,8 @@ class ChannelManager:
     @staticmethod
     def get_channel_by_id(channel_id: str) -> Channel:
         channel = get_mongo_client().aquarium.channels.find_one({"id": channel_id})
-
         if channel is None:
-            raise RuntimeError("No such channel %s", channel_id)
-
+            return None
         return Channel(**channel)
 
     @staticmethod

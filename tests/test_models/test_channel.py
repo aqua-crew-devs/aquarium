@@ -97,10 +97,10 @@ def test_it_should_get_channel_by_id(app):
 
 
 @mongomock.patch(servers=TEST_MONGO_SERVERS)
-def test_it_should_raise_error_if_no_such_channel_exist_when_get_a_channel(app):
+def test_it_should_return_none(app):
     with app.app_context():
-        with pytest.raises(RuntimeError):
-            ChannelManager.get_channel_by_id("abcd")
+        res = ChannelManager.get_channel_by_id("abcd")
+        assert res is None
 
 
 @mongomock.patch(servers=TEST_MONGO_SERVERS)
