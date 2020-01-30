@@ -1,6 +1,9 @@
 from os import makedirs, getenv
 from flask import Flask
 
+from .views.resources import init_resources
+from .utils import YouTubeDataAPIInstance
+
 
 def init_route(app):
     from .views import users
@@ -29,5 +32,7 @@ def create_app(test_config=None):
         app.config.from_mapping(test_config)
 
     init_route(app)
+    init_resources(app)
     init_cli_command(app)
+    YouTubeDataAPIInstance.init(app.config.get("YOUTUBE_DATA_API_KEY", ""))
     return app
