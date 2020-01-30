@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from src.models.channel import Channel
-from src.controllers.exceptions import ChannelExistedException
+from src.controllers.exceptions import ChannelExistedException, ChannelNotExistException
 
 
 def create_sample_channel():
@@ -146,3 +146,13 @@ def test_it_should_return_channel(client, mocker):
     assert payload["published_at"] == "2020-01-24"
     assert payload["thumbnail"] == "https://url_to_thumbnails"
     assert payload["country"] == "JP"
+
+
+def test_it_should_return_404_if_channel_not_exist(client, mocker):
+    mocker.patch(
+        "src.views.resources.channels.ChannelController.get_channel",
+        side_effect=ChannelNotExistException("not_exist"),
+    )
+
+    resp = client.get("/channels/not_exist")
+    assert resp.status_code == 404

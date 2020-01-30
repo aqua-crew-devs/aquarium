@@ -4,7 +4,7 @@ from dateutil.parser import parse
 
 from src.controllers.channel import ChannelController
 from src.controllers.auth import AuthenticationController
-from src.controllers.exceptions import ChannelExistedException
+from src.controllers.exceptions import ChannelExistedException, ChannelNotExistException
 from src.models.channel import Channel
 
 
@@ -47,4 +47,7 @@ class ChannelsResource(Resource):
 
 class ChannelsIndexResource(Resource):
     def get(self, id: str):
-        return ChannelController.get_channel(id).serialize()
+        try:
+            return ChannelController.get_channel(id).serialize()
+        except ChannelNotExistException:
+            return "", 404
