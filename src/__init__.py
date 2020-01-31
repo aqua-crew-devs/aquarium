@@ -34,5 +34,5 @@ def create_app(test_config=None):
     init_route(app)
     init_resources(app)
     init_cli_command(app)
-    YouTubeDataAPIInstance.init(app.config.get("YOUTUBE_DATA_API_KEY", ""))
+    YouTubeDataAPIInstance.init(app.config.get("YOUTUBE_API_KEY", ""))
     return app
