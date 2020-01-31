@@ -11,4 +11,6 @@ RUN apt-get install dos2unix
 
 EXPOSE 5000
 
+ENV FLASK_APP=src
+
 ENTRYPOINT [ "./entrypoint.sh" ]
