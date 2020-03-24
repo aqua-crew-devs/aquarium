@@ -28,13 +28,15 @@ class Channel:
         res["published_at"] = res["published_at"].strftime("%Y-%m-%d")
         return res
 
+    def save(self):
+        channels = get_mongo_client().aquarium.channels
+        channels.find_one_and_replace({"id": self.id}, vars(self), upsert=True)
+
 
 class ChannelManager:
-    @staticmethod
-    def save(channel: Channel):
-        channels = get_mongo_client().aquarium.channels
-
-        channels.find_one_and_replace({"id": channel.id}, vars(channel), upsert=True)
+    # @staticmethod
+    # def save(channel: Channel):
+    #     channel.save()
 
     @staticmethod
     def get_channels():
