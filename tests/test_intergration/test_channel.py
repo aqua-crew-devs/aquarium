@@ -35,3 +35,27 @@ def test_it_should_create_a_channel_in_auto_mode(client, mocker, auth):
             }
         )
     )
+
+
+def test_it_should_return_code_1_400_error_in_auto_mode_if_no_such_channel_exist(
+    client, mocker, auth
+):
+    create_channel_mocker = mocker.patch(
+        "src.views.resources.channels.ChannelController.create_channel"
+    )
+    with open(
+        "./tests/samples/channel_empty_resp.json", encoding="utf-8"
+    ) as json_sample:
+        mocked_resp = Mock()
+        mocked_resp.json = Mock(return_value=json.load(json_sample))
+        mocker.patch("requests.get", return_value=mocked_resp)
+
+    auth.login()
+    resp = client.post(
+        "/channels",
+        json={"mode": "auto", "channel": {"id": "UC1opHUrw8rvnsadT-iGp7Cg"}},
+    )
+
+    assert resp.status_code == 400
+    res = resp.get_json()
+    res["code"] == 1

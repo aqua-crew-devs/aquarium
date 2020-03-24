@@ -37,4 +37,7 @@ class YouTubeDataAPI:
         )
 
     def get_channel_by_id(self, channel_id: str):
-        return self.request(Channels("snippet", channel_id)).items
+        res = self.request(Channels("snippet", channel_id))
+        if len(res.items) == 0:
+            return None
+        return res.items[0]
