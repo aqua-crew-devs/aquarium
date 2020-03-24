@@ -56,4 +56,3 @@ class ChannelManager:
 
         if res.deleted_count == 0:
             raise RuntimeError("No such channel %s", channel_id)
-

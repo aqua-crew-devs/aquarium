@@ -1,4 +1,6 @@
 from datetime import datetime
+from unittest.mock import Mock
+import json
 
 from src.models.channel import Channel
 from src.controllers.exceptions import ChannelExistedException, ChannelNotExistException
@@ -51,45 +53,6 @@ def test_it_should_create_a_channel_in_manual_mode(client, mocker, auth):
     auth.login()
 
     resp = client.post("/channels", json={"mode": "manual", "channel": aqua_channel,},)
-    assert resp.status_code == 201
-    create_channel_mocker.assert_called_with(
-        Channel(
-            **{
-                "id": "UC1opHUrw8rvnsadT-iGp7Cg",
-                "name": "Aqua Ch. 湊あくあ",
-                "description": "sample desp",
-                "published_at": datetime(2018, 7, 31, 0, 0, 0),
-                "thumbnail": "https://yt3.ggpht.com/a/AGF-l79lFypl4LxY5kf60UpCL6gakgSGHtN-t8hq1g=s288-c-k-c0xffffffff-no-rj-mo",
-                "country": "JP",
-            }
-        )
-    )
-
-
-def test_it_should_create_a_channel_in_auto_mode(client, mocker, auth):
-    create_channel_mocker = mocker.patch(
-        "src.views.resources.channels.ChannelController.create_channel"
-    )
-    mocker.patch(
-        "src.views.resources.channels.fetch_channel_info_from_youtube",
-        return_value=Channel(
-            **{
-                "id": "UC1opHUrw8rvnsadT-iGp7Cg",
-                "name": "Aqua Ch. 湊あくあ",
-                "description": "sample desp",
-                "published_at": datetime(2018, 7, 31, 0, 0, 0),
-                "thumbnail": "https://yt3.ggpht.com/a/AGF-l79lFypl4LxY5kf60UpCL6gakgSGHtN-t8hq1g=s288-c-k-c0xffffffff-no-rj-mo",
-                "country": "JP",
-            }
-        ),
-    )
-
-    auth.login()
-    resp = client.post(
-        "/channels",
-        json={"mode": "auto", "channel": {"id": "UC1opHUrw8rvnsadT-iGp7Cg"}},
-    )
-
     assert resp.status_code == 201
     create_channel_mocker.assert_called_with(
         Channel(

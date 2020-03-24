@@ -13,10 +13,7 @@ from src.utils.youtube import Channels
 
 def fetch_channel_info_from_youtube(channel_id: str) -> Channel:
     yt_data_api = YouTubeDataAPIInstance.get_instance()
-    resp = yt_data_api.request(Channels("snippet", channel_id))
-    if len(resp.items) == 0:
-        raise ChannelNotExistException(channel_id)
-    channel = resp.items[0]
+    channel = yt_data_api.get_channel_by_id(channel_id)[0]
     return Channel(
         id=channel.id,
         name=channel.title,
