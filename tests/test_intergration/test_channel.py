@@ -2,9 +2,35 @@ from datetime import datetime
 from unittest.mock import Mock
 import json
 
+import mongomock
+import pymongo
+
 from src.models.channel import Channel
 
+TEST_MONGO_SERVER = ("localhost", 27017)
+TEST_MONGO_SERVERS = (TEST_MONGO_SERVER,)
 
+
+def create_sample_channel():
+    return {
+        "id": "UC1opHUrw8rvnsadT-iGp7Cg",
+        "name": "helloworld",
+        "description": "an awesome channel",
+        "thumbnail": "https://url_to_thumbnails",
+        "published_at": datetime(2020, 1, 24, 6, 14, 00),
+        "country": "JP",
+    }
+
+
+def get_fake_db():
+    return pymongo.MongoClient("localhost", 27017).aquarium
+
+
+def get_channels_collection():
+    return get_fake_db().channels
+
+
+@mongomock.patch(servers=TEST_MONGO_SERVERS)
 def test_it_should_create_a_channel_in_auto_mode(client, mocker, auth):
     create_channel_mocker = mocker.patch(
         "src.views.resources.channels.ChannelController.create_channel"
@@ -37,6 +63,7 @@ def test_it_should_create_a_channel_in_auto_mode(client, mocker, auth):
     )
 
 
+@mongomock.patch(servers=TEST_MONGO_SERVERS)
 def test_it_should_return_code_1_400_error_in_auto_mode_if_no_such_channel_exist(
     client, mocker, auth
 ):
@@ -59,3 +86,22 @@ def test_it_should_return_code_1_400_error_in_auto_mode_if_no_such_channel_exist
     assert resp.status_code == 400
     res = resp.get_json()
     res["code"] == 1
+
+
+@mongomock.patch(servers=TEST_MONGO_SERVERS)
+def test_it_should_return_code_2_400_error_if_there_have_such_channel_exist(
+    client, app, auth
+):
+    with app.app_context():
+        channels = get_channels_collection()
+        channels.insert(create_sample_channel())
+
+        auth.login()
+        resp = client.post(
+            "/channels",
+            json={"mode": "auto", "channel": {"id": "UC1opHUrw8rvnsadT-iGp7Cg"}},
+        )
+
+        assert resp.status_code == 400
+        res = resp.get_json()
+        res["code"] == 2

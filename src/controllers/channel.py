@@ -1,3 +1,5 @@
+from typing import Optional
+
 from src.models.channel import Channel, ChannelManager
 from .exceptions import ChannelExistedException, ChannelNotExistException
 
@@ -14,10 +16,8 @@ class ChannelController:
         channel.save(channel)
 
     @staticmethod
-    def get_channel(id: str) -> Channel:
+    def get_channel(id: str) -> Optional[Channel]:
         res = ChannelManager.get_channel_by_id(id)
-        if res is None:
-            raise ChannelNotExistException(id)
         return res
 
     @staticmethod

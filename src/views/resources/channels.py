@@ -39,6 +39,9 @@ class ChannelsResource(Resource):
     def post(self):
         payload = request.get_json()
         mode = payload["mode"]
+        channel_id = payload["channel"]["id"]
+        if ChannelController.get_channel(channel_id):
+            return {"code": ERROR_CODE_CHANNEL_HAS_EXISTED_IN_DB}, 400
 
         if mode == "manual":
             payload["channel"]["published_at"] = parse(

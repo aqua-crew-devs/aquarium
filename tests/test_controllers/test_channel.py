@@ -69,15 +69,11 @@ def test_it_should_return_channel_by_id(mocker):
     assert res == channel
 
 
-def test_it_should_raise_not_existed_exception_if_try_to_get_not_existing_channel(
-    mocker,
-):
+def test_it_should_return_None_if_try_to_get_not_existing_channel(mocker):
     mocker.patch(
         "src.controllers.channel.ChannelManager.get_channel_by_id", return_value=None,
     )
-
-    with pytest.raises(ChannelNotExistException):
-        ChannelController.get_channel("abcd")
+    assert ChannelController.get_channel("abcd") is None
 
 
 def test_it_should_delete_channel(mocker):
