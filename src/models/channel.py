@@ -1,3 +1,7 @@
+from typing import Optional
+
+import deprecation
+
 from datetime import datetime
 from .database import get_mongo_client
 
@@ -32,6 +36,13 @@ class Channel:
         channels = get_mongo_client().aquarium.channels
         channels.find_one_and_replace({"id": self.id}, vars(self), upsert=True)
 
+    @staticmethod
+    def get_channel_by_id(channel_id: str) -> Optional["Channel"]:
+        channel = get_mongo_client().aquarium.channels.find_one({"id": channel_id})
+        if channel is None:
+            return None
+        return Channel(**channel)
+
 
 class ChannelManager:
     # @staticmethod
@@ -46,11 +57,9 @@ class ChannelManager:
         return res
 
     @staticmethod
+    @deprecation.deprecated(details="use get_channel_by_id of Channel class instead")
     def get_channel_by_id(channel_id: str) -> Channel:
-        channel = get_mongo_client().aquarium.channels.find_one({"id": channel_id})
-        if channel is None:
-            return None
-        return Channel(**channel)
+        return Channel.get_channel_by_id(channel_id)
 
     @staticmethod
     def delete_channel_by_id(channel_id: str):
