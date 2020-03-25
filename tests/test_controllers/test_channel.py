@@ -41,7 +41,7 @@ def test_it_should_create_channel(mocker):
     save = mocker.patch("src.controllers.channel.Channel.save", return_value=None,)
     ChannelController.create_channel(channel)
 
-    save.assert_called_with(channel)
+    save.assert_called()
 
 
 def test_it_should_raise_channel_existed_exception_when_attempt_to_create_existed_channel(

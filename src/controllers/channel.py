@@ -13,7 +13,7 @@ class ChannelController:
     def create_channel(channel: Channel):
         if ChannelManager.get_channel_by_id(channel.id) is not None:
             raise ChannelExistedException(channel.id)
-        channel.save(channel)
+        channel.save()
 
     @staticmethod
     def get_channel(id: str) -> Optional[Channel]:
