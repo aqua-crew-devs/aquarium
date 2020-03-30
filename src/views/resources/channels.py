@@ -13,10 +13,9 @@ from src.utils.youtube import Channels
 
 def fetch_channel_info_from_youtube(channel_id: str) -> Channel:
     yt_data_api = YouTubeDataAPIInstance.get_instance()
-    resp = yt_data_api.request(Channels("snippet", channel_id))
-    if len(resp.items) == 0:
-        raise ChannelNotExistException(channel_id)
-    channel = resp.items[0]
+    channel = yt_data_api.get_channel_by_id(channel_id)
+    if channel is None:
+        return None
     return Channel(
         id=channel.id,
         name=channel.title,
@@ -25,6 +24,10 @@ def fetch_channel_info_from_youtube(channel_id: str) -> Channel:
         thumbnail=channel.thumbnail.high,
         country=channel.country,
     )
+
+
+ERROR_CODE_CHANNEL_NOT_EXIST = 1
+ERROR_CODE_CHANNEL_HAS_EXISTED_IN_DB = 2
 
 
 class ChannelsResource(Resource):
@@ -36,6 +39,9 @@ class ChannelsResource(Resource):
     def post(self):
         payload = request.get_json()
         mode = payload["mode"]
+        channel_id = payload["channel"]["id"]
+        if ChannelController.is_channel_existed(channel_id):
+            return {"code": ERROR_CODE_CHANNEL_HAS_EXISTED_IN_DB}, 400
 
         if mode == "manual":
             payload["channel"]["published_at"] = parse(
@@ -47,11 +53,13 @@ class ChannelsResource(Resource):
             # mode == 'auto'
             channel_id = payload["channel"]["id"]
             channel = fetch_channel_info_from_youtube(channel_id)
+            if channel is None:
+                return {"code": ERROR_CODE_CHANNEL_NOT_EXIST}, 400
 
         try:
             ChannelController.create_channel(channel)
         except ChannelExistedException:
-            return {"code": 2}, 400
+            return {"code": ERROR_CODE_CHANNEL_HAS_EXISTED_IN_DB}, 400
 
         return "", 201
 

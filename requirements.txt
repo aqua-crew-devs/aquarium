@@ -7,6 +7,7 @@ certifi==2019.11.28
 chardet==3.0.4
 Click==7.0
 colorama==0.4.3
+deprecation==2.0.7
 Flask==1.1.1
 Flask-RESTful==0.3.7
 freezegun==0.3.12
@@ -35,7 +36,7 @@ six==1.13.0
 toml==0.10.0
 typed-ast==1.4.0
 urllib3==1.25.7
-waitress==1.4.3
+waitress==1.4.1
 wcwidth==0.1.7
 Werkzeug==0.16.0
 zipp==0.6.0

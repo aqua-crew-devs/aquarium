@@ -1,0 +1,42 @@
+{
+  "kind": "youtube#channelListResponse",
+  "etag": "\"ksCrgYQhtFrXgbHAhi9Fo5t0C2I/DtuM1Zea75J0Z_gM76LcmPkXGgI\"",
+  "pageInfo": {
+    "totalResults": 1,
+    "resultsPerPage": 1
+  },
+  "items": [
+    {
+      "kind": "youtube#channel",
+      "etag": "\"ksCrgYQhtFrXgbHAhi9Fo5t0C2I/7-F9M9ZMe8mJ7C61CIUf3Rd3l5I\"",
+      "id": "UC1opHUrw8rvnsadT-iGp7Cg",
+      "snippet": {
+        "title": "Aqua Ch. 湊あくあ",
+        "description": "バーチャルメイド⚓️湊あくあ(みなとあくあ)です！ど、ドジとか言わないでください！\n放送で色んな変わったゲームや雑談をしています…！！\n【生放送】#湊あくあ生放送【関連ツイート】#湊あくあ 【ファン】 #あくあクルー【絵文字】⚓️【ﾌｧﾝｱｰﾄ】 #あくあーと ※動画やﾂｲｰﾄで使用させて頂くことがあります。担当絵師：がおう先生【@umaiyo_puyoman】",
+        "publishedAt": "2018-08-01T06:38:45.000Z",
+        "thumbnails": {
+          "default": {
+            "url": "https://yt3.ggpht.com/a/AATXAJwHPp_TkvcWJyblt9XVYDjNSjrj6KdpQSCQNQ=s88-c-k-c0xffffffff-no-rj-mo",
+            "width": 88,
+            "height": 88
+          },
+          "medium": {
+            "url": "https://yt3.ggpht.com/a/AATXAJwHPp_TkvcWJyblt9XVYDjNSjrj6KdpQSCQNQ=s240-c-k-c0xffffffff-no-rj-mo",
+            "width": 240,
+            "height": 240
+          },
+          "high": {
+            "url": "https://yt3.ggpht.com/a/AATXAJwHPp_TkvcWJyblt9XVYDjNSjrj6KdpQSCQNQ=s800-c-k-c0xffffffff-no-rj-mo",
+            "width": 800,
+            "height": 800
+          }
+        },
+        "localized": {
+          "title": "Aqua Ch. 湊あくあ",
+          "description": "バーチャルメイド⚓️湊あくあ(みなとあくあ)です！ど、ドジとか言わないでください！\n放送で色んな変わったゲームや雑談をしています…！！\n【生放送】#湊あくあ生放送【関連ツイート】#湊あくあ 【ファン】 #あくあクルー【絵文字】⚓️【ﾌｧﾝｱｰﾄ】 #あくあーと ※動画やﾂｲｰﾄで使用させて頂くことがあります。担当絵師：がおう先生【@umaiyo_puyoman】"
+        },
+        "country": "JP"
+      }
+    }
+  ]
+}

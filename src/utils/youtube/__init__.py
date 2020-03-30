@@ -7,20 +7,6 @@ from .channels import Channels
 from .interface import IAPIObject
 
 
-# class IAPIObject(abc.ABC):
-#     def get_url(self) -> str:
-#         pass
-
-#     def get_http_method(self) -> str:
-#         pass
-
-#     def get_parameters(self) -> Tuple[str, dict]:
-#         pass
-
-#     def parse_item(self, item):
-#         pass
-
-
 class YouTubeDataAPIResponse:
     def __init__(self, etag: str, items):
         self.etag = etag
@@ -50,3 +36,8 @@ class YouTubeDataAPI:
             result["etag"], list(map(api_object.parse_item, result["items"]))
         )
 
+    def get_channel_by_id(self, channel_id: str):
+        res = self.request(Channels("snippet", channel_id))
+        if len(res.items) == 0:
+            return None
+        return res.items[0]
