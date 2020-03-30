@@ -61,6 +61,33 @@ def test_it_should_create_a_channel_in_auto_mode(client, mocker, auth):
 
 
 @mongomock.patch(servers=TEST_MONGO_SERVERS)
+def test_it_should_create_a_channel_in_manual_mode(client, mocker, auth):
+    aqua_channel = {
+        "id": "UC1opHUrw8rvnsadT-iGp7Cg",
+        "name": "Aqua Ch. 湊あくあ",
+        "description": "sample desp",
+        "published_at": "2018-07-31",
+        "thumbnail": "https://yt3.ggpht.com/a/AGF-l79lFypl4LxY5kf60UpCL6gakgSGHtN-t8hq1g=s288-c-k-c0xffffffff-no-rj-mo",
+        "country": "JP",
+    }
+
+    auth.login()
+
+    resp = client.post("/channels", json={"mode": "manual", "channel": aqua_channel,},)
+    assert resp.status_code == 201
+    channel = get_channels_collection().find_one({"id": "UC1opHUrw8rvnsadT-iGp7Cg"})
+    assert channel["name"] == "Aqua Ch. 湊あくあ"
+    assert channel["description"] == "sample desp"
+
+    assert channel["published_at"] == datetime(2018, 7, 31, 0, 0, 0)
+    assert (
+        channel["thumbnail"]
+        == "https://yt3.ggpht.com/a/AGF-l79lFypl4LxY5kf60UpCL6gakgSGHtN-t8hq1g=s288-c-k-c0xffffffff-no-rj-mo"
+    )
+    assert channel["country"] == "JP"
+
+
+@mongomock.patch(servers=TEST_MONGO_SERVERS)
 def test_it_should_return_code_1_400_error_in_auto_mode_if_no_such_channel_exist(
     client, mocker, auth
 ):
