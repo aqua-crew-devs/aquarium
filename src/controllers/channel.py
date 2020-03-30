@@ -11,17 +11,20 @@ class ChannelController:
 
     @staticmethod
     def create_channel(channel: Channel):
-        if Channel.get_channel_by_id(channel.id) is not None:
+        if ChannelController.is_channel_existed(channel.id):
             raise ChannelExistedException(channel.id)
         channel.save()
 
     @staticmethod
     def get_channel(id: str) -> Optional[Channel]:
-        res = Channel.get_channel_by_id(id)
-        return res
+        return Channel.get_channel_by_id(id)
 
     @staticmethod
     def delete_channel(id: str):
-        if Channel.get_channel_by_id(id) is None:
+        if not ChannelController.is_channel_existed(id):
             raise ChannelNotExistException(id)
         Channel.delete_by_id(id)
+
+    @staticmethod
+    def is_channel_existed(channel_id) -> bool:
+        return Channel.get_channel_by_id(channel_id) is not None

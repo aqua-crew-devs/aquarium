@@ -36,7 +36,8 @@ def test_it_should_return_all_channels(mocker):
 def test_it_should_create_channel(mocker):
     channel = Channel(**create_sample_channel())
     mocker.patch(
-        "src.controllers.channel.Channel.get_channel_by_id", return_value=None,
+        "src.controllers.channel.ChannelController.is_channel_existed",
+        return_value=False,
     )
     save = mocker.patch("src.controllers.channel.Channel.save", return_value=None,)
     ChannelController.create_channel(channel)
@@ -49,7 +50,8 @@ def test_it_should_raise_channel_existed_exception_when_attempt_to_create_existe
 ):
     channel = Channel(**create_sample_channel())
     mocker.patch(
-        "src.controllers.channel.Channel.get_channel_by_id", return_value=Channel,
+        "src.controllers.channel.ChannelController.is_channel_existed",
+        return_value=True,
     )
     save = mocker.patch("src.controllers.channel.Channel.save", return_value=None,)
 
@@ -77,7 +79,8 @@ def test_it_should_return_None_if_try_to_get_not_existing_channel(mocker):
 def test_it_should_delete_channel(mocker):
     channel = Channel(**create_sample_channel())
     mocker.patch(
-        "src.controllers.channel.Channel.get_channel_by_id", return_value=channel,
+        "src.controllers.channel.ChannelController.is_channel_existed",
+        return_value=True,
     )
     delete = mocker.patch("src.controllers.channel.Channel.delete_by_id",)
 
@@ -88,7 +91,8 @@ def test_it_should_delete_channel(mocker):
 def test_it_should_raise_not_existed_channel_if_attempt_to_delete_such_one(mocker):
     channel = Channel(**create_sample_channel())
     mocker.patch(
-        "src.controllers.channel.Channel.get_channel_by_id", return_value=None,
+        "src.controllers.channel.ChannelController.is_channel_existed",
+        return_value=False,
     )
     delete = mocker.patch("src.controllers.channel.Channel.delete_by_id",)
 
