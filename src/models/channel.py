@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 import deprecation
 
@@ -43,27 +43,14 @@ class Channel:
             return None
         return Channel(**channel)
 
-
-class ChannelManager:
-    # @staticmethod
-    # def save(channel: Channel):
-    #     channel.save()
-
     @staticmethod
-    def get_channels():
+    def get_all_channels() -> List["Channel"]:
         channels = get_mongo_client().aquarium.channels.find()
-
         res = list(map(lambda channel: Channel(**channel), channels))
         return res
 
     @staticmethod
-    @deprecation.deprecated(details="use get_channel_by_id of Channel class instead")
-    def get_channel_by_id(channel_id: str) -> Channel:
-        return Channel.get_channel_by_id(channel_id)
-
-    @staticmethod
-    def delete_channel_by_id(channel_id: str):
-        res = get_mongo_client().aquarium.channels.delete_one({"id": channel_id})
-
+    def delete_by_id(id: str):
+        res = get_mongo_client().aquarium.channels.delete_one({"id": id})
         if res.deleted_count == 0:
-            raise RuntimeError("No such channel %s", channel_id)
+            raise RuntimeError("No such channel %s", id)
