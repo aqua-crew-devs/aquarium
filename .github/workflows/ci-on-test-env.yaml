@@ -13,7 +13,7 @@ jobs:
       with:
         ref: develop
     - name: Build and Push to docker registry
-      uses: elgohr/Publish-Docker-Github-Action@master
+      uses: elgohr/Publish-Docker-Github-Action@v5
       with:
         name: ayase252/aquarium
         username: ${{ secrets.DOCKER_USERNAME }}
